@@ -57,4 +57,4 @@ address: {
 {timestamps:true}
 )
 
-module.exports = mongoose.model('createUrl', userSchema)
+module.exports = mongoose.model('createUser', userSchema)
