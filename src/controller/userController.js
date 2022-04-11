@@ -1,6 +1,6 @@
 const userModel = require("../models/userModel")
 const aws = require("aws-sdk");
-const validation=require("../validation/validation")
+const validation = require("../validation/validation")
 
 
 const jwt = require("jsonwebtoken")
@@ -66,43 +66,51 @@ const createUSer = async function (req, res) {
     try {
         let data = req.body
         let files = req.files
-        
+        let address = JSON.parse(req.body.address)
 
-        const { fname, lname, email, phone, profileImage, password, address, billing } = data
-        // if (files && files.length > 0) {
-        //     let profileImagessweetselfie = await uploadFile(files[0])
-        // }
-        const output = await userModel.create(data)
-        //console.log(output)
-        const finalData = { fname, lname, email, profileImage, phone, password, address, billing }
+        const { fname, lname, email, phone, password } = data
+        let profileImagessweetselfie
+        if (files && files.length > 0) {
+            profileImagessweetselfie = await uploadFile(files[0])
+        }
+        console.log(profileImagessweetselfie)
+        // const output = await userModel.create(data,address)
+
+        const finalData = { fname, lname, email, phone, password, address }
         console.log(finalData)
+        data.profileImage = profileImagessweetselfie
+        finalData.profileImage = profileImagessweetselfie
+        data.address = address
+        //console.log(profileImage)
+        const output = await userModel.create(data)
         return res.status(201).send({ msg: "Data uploaded succesfully", data: finalData })
 
+    }//address[shipping][street]
+
+    catch (err) {
+        console.log(err)
+        return res.status(500).send({ msg: err.message })
+    }
+}
+
+const getProfie = async function (req, res) {
+    try {
+        const data = req.params.userId
+
+
+
+        const getProfiileData = await userModel.findOne({ _id: data })
+
+        console.log(getProfiileData)
+
+        return res.send(getProfiileData)
     }
     catch (err) {
         console.log(err)
-        return res.status(500).send({ msg: err })
+        return res.status(500).send({ msg: false, msg: err.message })
     }
 }
 
-const getProfie = async function(req,res){
-    try{
-        const data = req.params.userId
-    
-    
-    
-    const getProfiileData= await userModel.findOne({_id:data})
-    
-    console.log(getProfiileData)
-    
-    return res.send(getProfiileData)
-    }
-    catch(err){
-        console.log(err)
-        return res.status(500).send({msg:false,msg:err.message})
-    }
-}
-   
 
 
 
@@ -128,7 +136,7 @@ const logIn = async (req, res) => {
         var token = jwt.sign({
 
             userId: input._id.toString(),
-            
+
             group: "10",
             iat: Math.floor(Date.now() / 1000),         //doubt clear about this after some time   //payload
             exp: Math.floor(Date.now() / 1000) + 1 * 60 * 60    //1 hourds:minute:second
@@ -136,9 +144,9 @@ const logIn = async (req, res) => {
         }, "group10")//secret key
         //const userId: input._id.toString(),
         res.setHeader("x-api-key", token) // look ion the postman body header
-        
-        
-        return res.status(200).send({ status: true,msg: "user loing successfully", data: token })
+
+
+        return res.status(200).send({ status: true, msg: "user loing successfully", data: token })
     }
     catch (err) {
         return res.status(500).send({ status: false, msg: err.message })
