@@ -6,7 +6,10 @@
 repolink : https://github.com/Manish-162403/project-productsManagementGroup10.git
 
 
-## Project - Products Management
+database: mongodb+srv://komalbansod_04:BdcyrSiZZa4v5y76@komal04.fvnel.mongodb.net/group10Database?retryWrites=true&w=majority
+
+
+## Project - Products Management  
 
 ### Key points
 - In this project we will work feature wise. That means we pick one object like user, book, blog, etc at a time. We work through it's feature. The steps would be:
