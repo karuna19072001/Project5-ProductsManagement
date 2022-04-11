@@ -97,23 +97,25 @@ const logIn = async (req, res) => {
         if (!validation.isValid(password))
             return res.status(400).send({ status: false, msg: "please enter password" })
 
-         let input = await userModel.findOne({ email, password })
+        var input = await userModel.findOne({ email, password })
 
         if (!input)
             return res.status(404).send({ status: false, msg: "user not found please enter valid credentials" })
 
-        let token = jwt.sign({
+        var token = jwt.sign({
 
             userId: input._id.toString(),
-            group: "05",
+            
+            group: "10",
             iat: Math.floor(Date.now() / 1000),         //doubt clear about this after some time   //payload
             exp: Math.floor(Date.now() / 1000) + 1 * 60 * 60    //1 hourds:minute:second
 
         }, "group10")//secret key
-
+        //const userId: input._id.toString(),
         res.setHeader("x-api-key", token) // look ion the postman body header
-
-        return res.status(200).send({ status: true, msg: "user loing successfully", data: token })
+        
+        
+        return res.status(200).send({ status: true,msg: "user loing successfully", data: token })
     }
     catch (err) {
         return res.status(500).send({ status: false, msg: err.message })
