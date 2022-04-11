@@ -3,11 +3,6 @@ const isrequestBody = (requestBody) => {
 }
 
 
-const isValidTitle = (title) => {
-    return ['Mr', 'Mrs', 'Miss'].indexOf(title) !== -1
-
-}
-
 
 const isValid = (value) => {
     if (typeof value === "undefined" || value === null)

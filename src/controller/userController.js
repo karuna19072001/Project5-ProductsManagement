@@ -65,9 +65,13 @@ const pic = async function (req, res) {
 const createUSer = async function (req, res) {
     try {
         let data = req.body
+        let files = req.files
+        
 
         const { fname, lname, email, phone, profileImage, password, address, billing } = data
-
+        // if (files && files.length > 0) {
+        //     let profileImagessweetselfie = await uploadFile(files[0])
+        // }
         const output = await userModel.create(data)
         //console.log(output)
         const finalData = { fname, lname, email, profileImage, phone, password, address, billing }
@@ -76,12 +80,31 @@ const createUSer = async function (req, res) {
 
     }
     catch (err) {
+        console.log(err)
         return res.status(500).send({ msg: err })
     }
 }
 
-module.exports.createUSer = createUSer;
-module.exports.pic = pic
+const getProfie = async function(req,res){
+    try{
+        const data = req.params.userId
+    
+    
+    
+    const getProfiileData= await userModel.findOne({_id:data})
+    
+    console.log(getProfiileData)
+    
+    return res.send(getProfiileData)
+    }
+    catch(err){
+        console.log(err)
+        return res.status(500).send({msg:false,msg:err.message})
+    }
+}
+   
+
+
 
 const logIn = async (req, res) => {
     try {
@@ -130,3 +153,4 @@ const logIn = async (req, res) => {
 module.exports.createUSer = createUSer;
 module.exports.pic = pic
 module.exports.logIn = logIn
+module.exports.getProfie = getProfie

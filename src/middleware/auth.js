@@ -5,7 +5,7 @@ const userModel=require("../models/userModel")
 
 const auhtentication=(req,res,next)=>{
     try{
-        const token=req.hearders["x-api-key"]
+        const token=req.headers["x-api-key"]
         if(!token){
             return res.status(400).send({status:false,msg:"please enter token "})
         }
