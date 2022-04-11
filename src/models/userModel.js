@@ -45,7 +45,7 @@ address: {
     street: {type:String, required:true},
     city: {type:String, required:true},
     pincode: {type:Number, required:true}
-  }
+  },
 },
 
   billing: {
