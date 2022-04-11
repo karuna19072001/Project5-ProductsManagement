@@ -1,5 +1,11 @@
 const userModel = require("../models/userModel")
 const aws = require("aws-sdk");
+const validation=require("../validation/validation")
+
+
+const jwt = require("jsonwebtoken")
+
+
 
 
 /**********************************************************************************************88 */
@@ -176,7 +182,8 @@ if(!isValid(data.billing.street)) {
 
 
 const getProfie = async function(req,res){
-    const data = req.params.userId
+  try{
+        const data = req.params.userId
     
     
     
@@ -185,7 +192,10 @@ const getProfie = async function(req,res){
     console.log(getProfiileData)
     
     return res.send(getProfiileData)
-    }
+}
+    catch (err){
+        return res.status(500).send({staus:false, message:err.message})
+    }}
    
 
 
@@ -205,8 +215,25 @@ const updateUser = async function (req, res){
 
   if(!(userId)){
       return res.status(400).send({status:false, msg:"plz provide userId in params"})
-
   }
+  const alreadyExsit = await userModel.findOne({ phone: data.phone })
+  if (alreadyExsit) {
+      return res.status(400).send({ status: false, msg: "phone already exit" })
+  }
+  if (isValid(data.phone))
+
+      if (!(/^([+]\d{2})?\d{10}$/.test(data.phone)))
+          return res.status(400).send({ status: false, msg: "Please Enter  a Valid Phone Number" })
+
+      if (isValid(data.email))
+      if (!(/^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/.test(data.email)))
+          return res.status(400).send({ status: false, msg: "is not a valid email" })
+
+          let alreadyExistEmail = await userModel.findOne({ email: data.email })
+          if (alreadyExistEmail) {
+    return res.status(400).send({ status: false, msg: "email already exit" })
+          }
+  
 //   let userID = await userModel.findById({userId:userId})
 //   if(!userID)
 const { fname, lname, email, phone,profileImage, password, address, billing } = data
@@ -217,17 +244,65 @@ if(!updateUser){
 }
 res.status(200).send({ status: true, data: updateUser })
 
-
     }
     catch (err) {
         return res.status(500).send({ msg: err })
     }
 }
 
+
+
+
+const logIn = async (req, res) => {
+    try {
+        let body = req.body
+        if (!validation.isrequestBody(body))
+            return res.status(400).send({ status: false, msg: "invalid request parameter, please provide login details" })
+
+        const { email, password } = body
+
+        if (!validation.isValid(email))
+            return res.status(400).send({ status: false, msg: "please enter email" })
+
+        if (!validation.isValid(password))
+            return res.status(400).send({ status: false, msg: "please enter password" })
+
+        var input = await userModel.findOne({ email, password })
+
+        if (!input)
+            return res.status(404).send({ status: false, msg: "user not found please enter valid credentials" })
+
+        var token = jwt.sign({
+
+            userId: input._id.toString(),
+            
+            group: "10",
+            iat: Math.floor(Date.now() / 1000),         //doubt clear about this after some time   //payload
+            exp: Math.floor(Date.now() / 1000) + 1 * 60 * 60    //1 hourds:minute:second
+
+        }, "group10")//secret key
+        //const userId: input._id.toString(),
+        res.setHeader("x-api-key", token) // look ion the postman body header
+        
+        
+        return res.status(200).send({ status: true,msg: "user loing successfully", data: token })
+    }
+    catch (err) {
+        return res.status(500).send({ status: false, msg: err.message })
+    }
+
+}
+
+
+
+
+
+
+
+module.exports.logIn = logIn
+
 module.exports.createUSer = createUSer;
+
 module.exports.pic=pic
 module.exports.getProfie = getProfie
 module.exports.updateUser=updateUser
-
-
-
