@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { type } = require("express/lib/response")
+// const { type } = require("express/lib/response")
 
 const userSchema = new mongoose.Schema({
 
