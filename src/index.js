@@ -1,11 +1,12 @@
 const express = require('express');
 var bodyParser = require('body-parser');
+const multer = require("multer");
 
 const route = require('./routes/route.js');
 
 const app = express();
 
-
+app.use(multer().any())
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
