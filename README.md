@@ -1,4 +1,10 @@
 #Thorium
+1. Amit kumar
+2. Komal Shridhar Bansod
+3. Manish Kumar
+
+repolink : https://github.com/Manish-162403/project-productsManagementGroup10.git
+
 
 ## Project - Products Management
 
