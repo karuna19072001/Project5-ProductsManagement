@@ -1,5 +1,11 @@
 const userModel = require("../models/userModel")
 const aws = require("aws-sdk");
+const validation=require("../validation/validation")
+
+
+const jwt = require("jsonwebtoken")
+
+
 
 
 aws.config.update(
@@ -42,7 +48,7 @@ const pic = async function (req, res) {
         let files = req.files
         if (files && files.length > 0) {
             let profileImage = await uploadFile(files[0])
-            res.status(201).send({ msg: "file uploaded succesfully", data: uploadedFileURL })
+            res.status(201).send({ msg: "file uploaded succesfully", data: profileImage })
         }
         else {
             res.status(400).send({ msg: "No file found" })
@@ -60,12 +66,12 @@ const createUSer = async function (req, res) {
     try {
         let data = req.body
 
-       // const { fname, lname, email, phone,profileImage, password, address, billing } = data
+        const { fname, lname, email, phone, profileImage, password, address, billing } = data
 
-        const output = await userModel.create( data)
-//console.log(output)
+        const output = await userModel.create(data)
+        //console.log(output)
         const finalData = { fname, lname, email, profileImage, phone, password, address, billing }
-console.log(finalData)
+        console.log(finalData)
         return res.status(201).send({ msg: "Data uploaded succesfully", data: finalData })
 
     }
@@ -75,4 +81,50 @@ console.log(finalData)
 }
 
 module.exports.createUSer = createUSer;
-module.exports.pic=pic
+module.exports.pic = pic
+
+const logIn = async (req, res) => {
+    try {
+        let body = req.body
+        if (!validation.isrequestBody(body))
+            return res.status(400).send({ status: false, msg: "invalid request parameter, please provide login details" })
+
+        const { email, password } = body
+
+        if (!validation.isValid(email))
+            return res.status(400).send({ status: false, msg: "please enter email" })
+
+        if (!validation.isValid(password))
+            return res.status(400).send({ status: false, msg: "please enter password" })
+
+         let input = await userModel.findOne({ email, password })
+
+        if (!input)
+            return res.status(404).send({ status: false, msg: "user not found please enter valid credentials" })
+
+        let token = jwt.sign({
+
+            userId: input._id.toString(),
+            group: "05",
+            iat: Math.floor(Date.now() / 1000),         //doubt clear about this after some time   //payload
+            exp: Math.floor(Date.now() / 1000) + 1 * 60 * 60    //1 hourds:minute:second
+
+        }, "group10")//secret key
+
+        res.setHeader("x-api-key", token) // look ion the postman body header
+
+        return res.status(200).send({ status: true, msg: "user loing successfully", data: token })
+    }
+    catch (err) {
+        return res.status(500).send({ status: false, msg: err.message })
+    }
+
+}
+
+
+
+
+
+module.exports.createUSer = createUSer;
+module.exports.pic = pic
+module.exports.logIn = logIn
