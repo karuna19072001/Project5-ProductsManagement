@@ -10,7 +10,7 @@ const auhtentication=(req,res,next)=>{
             return res.status(400).send({status:false,msg:"please enter token "})
         }
         
-         let decoded=jwt.verify(token,"group10")
+         let decoded=jwt.verify(token,"group28")
     
         if(!decoded){
             return res.status(403).send({status:false,mag:"token is not valid"})
