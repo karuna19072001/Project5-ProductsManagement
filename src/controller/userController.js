@@ -187,28 +187,7 @@ const createUSer = async function (req, res) {
     }
 }
 
-const getProfie = async function (req, res) {
-    try {
-        const data = req.params.userId
 
-        let token = req.headers["x-api-key"];
-        let decodedToken = jwt.verify(token, "group10");
-      let userId  = decodedToken.userId
-       if(userId != data ){
-           return res.status(400).send({status:false , msg:"You are not allowed to modify requested user's data"})
-       }
-
-        const getProfiileData = await userModel.findOne({ _id: data })
-
-        console.log(getProfiileData)
-
-        return res.send(getProfiileData)
-    }
-    catch (err) {
-        console.log(err)
-        return res.status(500).send({ msg: false, msg: err.message })
-    }
-}
 
 
 
@@ -236,11 +215,11 @@ const logIn = async (req, res) => {
 
             userId: input._id.toString(),
 
-            group: "10",
+            group: "28",
             iat: Math.floor(Date.now() / 1000),         //doubt clear about this after some time   //payload
             exp: Math.floor(Date.now() / 1000) + 1 * 60 * 60    //1 hourds:minute:second
 
-        }, "group10")//secret key
+        }, "group28")//secret key
         //const userId: input._id.toString(),
         res.setHeader("x-api-key", token) // look ion the postman body header
 
@@ -252,6 +231,34 @@ const logIn = async (req, res) => {
     }
 
 }
+
+
+
+const getProfie = async function (req, res) {
+    try {
+        const data = req.params.userId
+
+       //const {fname, lname, email, phone, password, profileImage, address} = data
+
+        let token = req.headers["x-api-key"];
+        let decodedToken = jwt.verify(token, "group28");
+      let userId  = decodedToken.userId
+       if(userId != data ){
+           return res.status(400).send({status:false , msg:"You are not allowed to modify requested user's data"})
+       }
+
+        const getProfiileData = await userModel.findOne({ data: data })
+
+        console.log(getProfiileData)
+
+        return res.status(200).send({ status: true, message: "User profile details", data:getProfiileData})
+    }
+    catch (err) {
+        console.log(err)
+        return res.status(500).send({ msg: false, msg: err.message })
+    }
+}
+
 
 
 const updateUser = async function (req, res) {

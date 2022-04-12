@@ -61,9 +61,10 @@ address: {
       city: { type: String, required: true },
       pincode: { type: Number, required: true }
     },
+    
   }
 },
-  { timestamps: true }
+  
 )
 
 module.exports = mongoose.model('createUser', userSchema)
