@@ -1,4 +1,5 @@
 const bcrypt = require("bcryptjs/dist/bcrypt")
+const mongoose = require('mongoose')
 
 const isValid = (value) => {
     if (typeof value != 'string'){return false}
@@ -16,6 +17,12 @@ const isValidRequestBody = (body) => {
     else
         return true
 }
+
+
+const isValidObjectId = function (ObjectId) {
+  return mongoose.Types.ObjectId.isValid(ObjectId)
+}
+
 
 const isValidEmail = (email) => {
     return /^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/.test(email);
@@ -59,6 +66,9 @@ const isValidBoolean = (value) => {
 const isValidFiles = (requestFiles) => {
     return requestFiles.length > 0 
 }
+const isRightFormatprice = function (price) {
+    return /^[+-]?([0-9]+\.?[0-9]*|\.[0-9]+)$/.test(price);
+}
 
 const isValidSize = (Arr) => {
     let newArr = []
@@ -86,5 +96,7 @@ module.exports = {
     isValidNumber,
     isValidBoolean,
     isValidFiles,
-    isValidSize
+    isValidSize,
+    isValidObjectId,
+    isRightFormatprice
 }

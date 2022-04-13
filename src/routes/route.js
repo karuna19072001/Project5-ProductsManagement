@@ -12,7 +12,7 @@ router.put('/user/:userId/profile', userController.updateProfile)
 router.post('/products', productController.createProduct)
 router.get("/products", productController.getProduct);
 router.get("/products/:productId", productController.getProductById);
-router.put("/products/:productId", productController.updateProductById);
+router.put("/products/:productId", productController.updateProduct);
 router.delete("/products/:productId", productController.deleteProductById);
 
 module.exports = router
