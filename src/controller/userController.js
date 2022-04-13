@@ -1,9 +1,15 @@
 const userModel = require("../models/userModel")
 const aws = require("aws-sdk");
-const validation = require("../validation/validation")
+//const validator = require("../validator/validator")
+const bcrypt = require('bcrypt')
+//const validator = require("validator")
 
-
+const validator = require("../Validator/validator");
 const jwt = require("jsonwebtoken")
+//const aws = require('../Validator/aws')
+
+
+//const jwt = require("jsonwebtoken")
 
 
 
@@ -59,6 +65,10 @@ let uploadFile = async (file) => {
 }
 
 
+// const salt = async bcrypt.genSalt(10);
+// password = await bcrypt.hash(password, salt)
+
+
 const pic = async function (req, res) {
     try {
         let files = req.files
@@ -75,7 +85,7 @@ const pic = async function (req, res) {
     }
 }
 
-const createUSer = async function (req, res) {
+const createUser = async function (req, res) {
     try {
         let data = req.body
         let files = req.files
@@ -135,9 +145,18 @@ const createUSer = async function (req, res) {
     if (!(/^[a-zA-Z0-9!@#$%^&*]{8,15}$/.test(data.password))) {
         return res.status(400).send({ status: false, msg: "please provide valid password" })
     }
-    if (!isValid(data.password)) {
-        return res.status(400).send({ status: false, msg: "Password is Required" })
-    }
+     if (isValid(data.password))
+{
+     res.status(400).send({ status: false, msg: "please provide the password" });
+  }
+if (!/^(?=.[0-9])(?=.[A-Z])(?=.[a-z])(?=.[!@#$%^&])[a-zA-Z0-9!@#$%^&]{8,16}$/.test(password)) {
+   res.status(400).send({status: false,msg: "Please enter Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character",});
+}
+   let saltRounds = 10;
+   const salt = await bcrypt.genSalt(saltRounds)
+   console.log(salt)
+   let hash = await bcrypt.hash(req.body.password,salt)
+   console.log(hash)
     if (!isValid(data.profileImage)) {
         return res.status(400).send({ status: false, msg: "ProfileImage is Required" })
     }
@@ -177,7 +196,7 @@ const createUSer = async function (req, res) {
         // data.address = address
         //console.log(profileImage)
         const output = await userModel.create(data)
-        return res.status(201).send({ msg: "Data uploaded succesfully", data: finalData })
+        return res.status(201).send({ msg: "Data uploaded succesfully", data: output })
 
     }//address[shipping][street]
 
@@ -188,7 +207,122 @@ const createUSer = async function (req, res) {
 }
 
 
-
+// const createUser = async (req, res) => {
+//     try {
+//       let files = req.files
+//       let requestBody = req.body
+  
+//       if (!validator.isValidRequestBody(requestBody))
+//         return res.status(400).send({status: true, msg: "Invalid request parameters ,please provide the user details",
+//           });
+  
+//      let  { fname, lname, email, phone, password,address ,profileImage} = requestBody;
+  
+//       if (!validator.isValid(fname && lname))
+//        return res.status(400).send({ status: false, msg: "please provide the valid name" });
+  
+//       if (!validator.isValid(email))
+//         return res.status(400).send({ status: false, msg: "email is not present in input request" });
+        
+//         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+//         return res.status(400).send({ status: false, msg: "please provide a valid email address" });
+      
+      
+//         let isEmailUsed = await userModel.findOne({ email });
+  
+//        if (isEmailUsed)
+//         return res.status(400).send({ status: false, msg: `${email} is already exists` });
+  
+      
+//          // if(!aws(profileImage))
+//          // return res.status1(400).json({status:false,msg: `please requried aws link`})    
+//          profileImage = await 
+//          uploadFile(files[0])
+//          console.log(profileImage)
+//          // profileImage = await config.uploadFile(req.files[0]);
+  
+//       if (!validator.isValid(phone))
+//         return res.status(400).send({ status: false, msg: "please provide the  phone number" });
+  
+//       if (!/^[1-9]{1}\d{9}$/.test(phone))
+//         return res.status(400).send({ status: true, msg: "please enter 10 digit number which does not contain 0 at starting position",
+//           });
+          
+//       let isPhoneUsed = await userModel.findOne({ phone });
+  
+//       if (isPhoneUsed)
+//         return res.status(400).send({ status: false, msg: `${phone} is already exists` });
+  
+//       //The Phone Numbers will be of 10 digits, and it will start from 6,7,8 and 9 and remaing 9 digits
+  
+//       if (!validator.isValid(password))
+//         return res.status(400).send({ status: false, msg: "please provide the password" });
+  
+//         if (
+//           !/^(?=.[0-9])(?=.[A-Z])(?=.[a-z])(?=.[!@#$%^&])[a-zA-Z0-9!@#$%^&]{8,16}$/.test(
+//             password
+//           )
+//         ) {
+//           return res.status(400).send({
+//             status: false,
+//             msg: "Please enter Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character",
+//           });
+//         }
+//            let saltRounds = 10;
+//            const salt = await bcrypt.genSalt(saltRounds)
+//            console.log(salt)
+//            let hash = await bcrypt.hash(req.body.password,salt)
+//            console.log(hash)
+  
+//     // let hasedPassword = await bcrypt.hash(password, saltRounds);
+  
+//   if (!validator.isValid(address))
+//   return res.status(400).send({ status: false, msg: "address is required" });
+  
+//   if (!validator.isValidRequestBody(req.body.address.shipping))
+//   return res.status(400).send({ status: false, msg: "please provide shipping details" });
+  
+//   if (address.shipping) {
+//   if (!validator.isValid(address.shipping.street))
+//     return res.status(400).send({ status: false, msg: "please provide street details" });
+  
+//   if (!validator.isValid(address.shipping.city))
+//     return res.status(400).send({ status: false, msg: "please provide street details" });
+  
+//   if (!validator.isValid(address.shipping.pincode))
+//     return res.status(400).send({ status: false, msg: "please provide street details" });
+//   }
+  
+//   if (!validator.isValidRequestBody(req.body.address.billing))
+//   return res.status(400).send({ status: false, msg: "please provide billing details" });
+  
+//   if (address.billing) {
+//   if (!validator.isValid(address.billing.street))
+//     return res.status(400).send({ status: false, msg: "please provide street details" });
+  
+//   if (!validator.isValid(address.billing.city))
+//     return res.status(400).send({ status: false, msg: "please provide street details" });
+  
+//   if (!validator.isValid(address.billing.pincode))
+//     return res.status(400).send({ status: false, msg: "please provide street details" });
+//   }
+  
+       
+//       //    profileImage = await aws.uploadFile(files[0])
+//       //     console.log(profileImage,"gshjghjg")
+//           const updatedBody = { fname, lname, email,phone, password:hash, address ,profileImage}
+//           let user = await userModel.create(updatedBody)
+//           res.status(201).send({ status: true, message: 'User created successfully', data: user })
+  
+          
+//       // userData = { fname, lname, email, phone, address,password :hash};
+//       // const newUser = await userModel.create(userData);
+//       // res.status(201).json({ status: true,msg: "New user registered successfully",data: newUser,
+//       //   });
+//     } catch (err) {
+//       res.status(500).send({ status: false, msg: err.message });
+//     }
+//   }
 
 
 
@@ -234,7 +368,7 @@ const logIn = async (req, res) => {
 
 
 
-const getProfie = async function (req, res) {
+const getProfile = async function (req, res) {
     try {
         const data = req.params.userId
 
@@ -258,6 +392,49 @@ const getProfie = async function (req, res) {
         return res.status(500).send({ msg: false, msg: err.message })
     }
 }
+
+
+
+
+const getProductById = async (req, res) => {
+  //try {
+    const productId = req.params.productId;
+    if (!validator.isValid(req.params)) {
+      return res
+        .status(400)
+        .send({ status: false, message: "productId required" });
+    }
+
+    if (!validator.isValidObjectId(productId)) {
+      return res
+        .status(400)
+        .send({ status: false, message: "Invalid ObjectId" });
+    }
+
+    const productData = await productModel.findOne({ _id: productId, isDeleted: false });
+
+    if (!validator.isValid(productData)) {
+      return res.status(404).send({
+        status: false,
+        message: `Product is not found with this ID: ${productId}`,
+      });
+    }
+  
+    if(productId){
+      return res
+      .status(200)
+      .send({ status: true, msg:" Great ProductData found " });
+
+    }
+    //catch (err) {
+    //   return res.status(500).send({ status: false, msg: err.message });
+    // }
+  }
+
+
+
+
+
 
 
 
@@ -301,16 +478,16 @@ if(userId1 != userId){
         return res.status(500).send({ msg: err })
     }
 }
+  
 
 
 
 
 
 
-
-module.exports.createUSer = createUSer;
+module.exports.createUser = createUser
 module.exports.updateUser = updateUser
 module.exports.pic = pic
 module.exports.logIn = logIn
-module.exports.getProfie = getProfie
-
+module.exports.getProfile = getProfile
+module.exports.getProductById = getProductById
