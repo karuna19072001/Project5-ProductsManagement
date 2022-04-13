@@ -1,38 +1,26 @@
-const jwt = require("jsonwebtoken");
-
+const jwt = require('jsonwebtoken')
 const userAuth = async (req, res, next) => {
-  try {
-    const token = req.header('Authorization', 'Bearer Token')
+    try {
+        const token = req.header('x-api-key')
+        if(!token) {
+            res.status(403).send({status: false, message: `Missing authentication token in request`})
+            return;
+        }
 
-    if (!token) {
-      return res
-        .status(403)
-        .send({
-          status: false,
-          message: `Missing authentication token in request`,
-        });
+        const decoded = await jwt.verifyToken(token);
+
+        if(!decoded) {
+            res.status(403).send({status: false, message: `Invalid authentication token in request`})
+            return;
+        }
+
+        req.userId = decoded.userId;
+
+        next()
+    } catch (error) {
+        console.error(`Error! ${error.message}`)
+        res.status(500).send({status: false, message: error.message})
     }
+}
 
-    let splitToken = token.split(' ')
-
-    const decodeToken = jwt.verify(splitToken[1], "group9")
-    
-    if (!decodeToken) {
-      return res
-        .status(403)
-        .send({
-          status: false,
-          message: `Invalid authentication token in request`,
-        });
-    }
-
-    req.userId = decodeToken.userId
-
-    next();
-  } catch (err) {
-    console.log(err);
-    res.status(500).send({ msg: err.message });
-  }
-};
-
-module.exports.userAuth = userAuth;
+module.exports = userAuth
