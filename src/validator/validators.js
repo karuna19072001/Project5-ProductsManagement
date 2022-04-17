@@ -48,14 +48,34 @@ const isValidImage = (image) => {
     return false
 }
 
+
+const validString = function (value) {
+    if (typeof value === "string" && value.trim().length == 0) return false;
+    return true;
+  };
+
+// const isvalidPass = (password) => {
+//     return /^(?=.\d)(?=.[a-z])(?=.*[A-Z]).{8,15}$/.test(password)
+//     //this regex we can use for validating password
+//     //6 to 20 characters which contain at least one numeric digit, one uppercase and one lowercase letter  
+// }
+
 const isvalidPass = (password) => {
-    return /^(?=.\d)(?=.[a-z])(?=.*[A-Z]).{8,15}$/.test(password)
+
+    
+    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,15}$/.test(password)
+
     //this regex we can use for validating password
     //6 to 20 characters which contain at least one numeric digit, one uppercase and one lowercase letter  
 }
 
+
 const isValidNumber = (value) => {
     return (!isNaN(value) && value > 0)
+}
+
+const isValidInteger = function isInteger(value) {
+    return value % 1 == 0;
 }
 
 
@@ -98,5 +118,7 @@ module.exports = {
     isValidFiles,
     isValidSize,
     isValidObjectId,
-    isRightFormatprice
+    isRightFormatprice,
+     validString, 
+     isValidInteger
 }

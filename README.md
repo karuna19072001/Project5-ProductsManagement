@@ -1,16 +1,6 @@
 #Thorium
-1. Amit kumar
-2. Komal Shridhar Bansod
-3. Manish Kumar
-4. Atul Chauhan
 
-repolink : https://github.com/Manish-162403/project-productsManagementGroup10.git
-
-
-database: mongodb+srv://komalbansod_04:BdcyrSiZZa4v5y76@komal04.fvnel.mongodb.net/group10Database?retryWrites=true&w=majority
-
-
-## Project - Products Management  
+## Project - Products Management
 
 ### Key points
 - In this project we will work feature wise. That means we pick one object like user, book, blog, etc at a time. We work through it's feature. The steps would be:
@@ -307,7 +297,7 @@ Send [form-data](https://developer.mozilla.org/en-US/docs/Web/API/FormData)
   - _**On success**_ - Return HTTP status 200. Also return the updated cart document. The response should be a JSON object like [this](#successful-response-structure)
   - _**On error**_ - Return a suitable error message with a valid HTTP status code. The response should be a JSON object like [this](#error-response-structure)
 
-### GET /users/:userId/cart
+### GET /users/:userId/cart 
 - Returns cart summary of the user.
 - Make sure that cart exist.
 - Make sure the userId in params and in JWT token match.

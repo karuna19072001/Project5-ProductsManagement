@@ -1,26 +1,39 @@
-const jwt = require('jsonwebtoken')
-const userAuth = async (req, res, next) => {
+const jwt = require("jsonwebtoken");
+const UserModel = require("../models/userModel");
+
+
+const authentication = async (req, res, next) => {
     try {
-        const token = req.header('x-api-key')
-        if(!token) {
-            res.status(403).send({status: false, message: `Missing authentication token in request`})
-            return;
+        let token = req.headers["x-api-key"];
+        if (!token){
+            return res.status(401).send({ status: false, message: "token is required" })
         }
-
-        const decoded = await jwt.verifyToken(token);
-
-        if(!decoded) {
-            res.status(403).send({status: false, message: `Invalid authentication token in request`})
-            return;
-        }
-
-        req.userId = decoded.userId;
-
-        next()
+        let decodedToken = jwt.verify(token, 'projectfiveshoppingkart')
+        if (!decodedToken) return res.status(401).send({ status: false, message: 'token is not valid' })
+        // console.log(decodedToken.exp)
+        // console.log("now", Math.floor(Date.now() / 1000))
     } catch (error) {
-        console.error(`Error! ${error.message}`)
-        res.status(500).send({status: false, message: error.message})
+        return res.status(500).send({ status: false, message: error.message })
     }
+    next()
 }
 
-module.exports = userAuth
+const authorisation = async (req, res, next) => {
+    try {
+        let token = req.headers["x-api-key"];
+        let decodedToken = jwt.verify(token, "projectfiveshoppingkart");
+        let userLoggingIn = req.params.userId
+        let userLoggedIn = decodedToken._id
+        let value = await UserModel.findById(userLoggingIn)
+        if (!value) return res.status(404).send({status:false, message: "user not found"})
+        if (value.userId != userLoggedIn) return res.status(403).send({ status: false, message: "You are not allowed to modify requested  data" })
+    }
+    catch (error) {
+        return res.status(500).send({status: false, message: error.message })
+    }
+    next()
+}
+
+
+module.exports.authentication = authentication
+module.exports.authorisation = authorisation
