@@ -20,7 +20,6 @@ let auth = async function (req, res, next) {
 
                 req.userId = decodedToken.userId
                 next()
-
             }
 
         } else {

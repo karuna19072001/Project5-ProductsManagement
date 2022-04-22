@@ -8,7 +8,7 @@ const auth = require('../middleware/auth')
 
 //user related
 router.post('/register', userController.register)
-router.post('/login', userController.useLogin)
+router.post('/login', userController.userLogin)
 router.get('/user/:userId/profile', auth.auth, userController.getUserById)
 router.put('/user/:userId/profile', auth.auth, userController.updateProfile)
 

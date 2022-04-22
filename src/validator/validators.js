@@ -88,6 +88,13 @@ const isValidSize = (Arr) => {
 const isValidCharacters = (value) => {
     return /^[A-Za-z]+$/.test(value)
 }
+
+const validString = function(value) {
+    if (typeof value === 'string' && value.trim().length === 0) return false
+    return true;
+}
+
+
 module.exports = {
     isValid,
     isValidEmail,
@@ -103,5 +110,6 @@ module.exports = {
     isValidBoolean,
     isValidSize,
     isValidCharacters,
-    isValidInteger
+    isValidInteger, 
+    validString
 }
