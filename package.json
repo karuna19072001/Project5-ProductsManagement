@@ -1,7 +1,7 @@
 {
   "name": "project-productsmanagementgroup10",
   "version": "1.0.0",
-  "description": "1. Amit kumar\r 2. Komal Shridhar Bansod\r 3. Manish Kumar",
+  "description": "1. Karuna Vijay Nimje\r 2. Priyanka Khatri\r 3. Swati Chamoli\r 4. Rohit Kumar Singh",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Manish-162403/project-productsManagementGroup10.git"
+    "url": "https://github.com/karuna19072001/Project5-productsManagement.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Manish-162403/project-productsManagementGroup10/issues"
+    "url": "https://github.com/karuna19072001/Project5-productsManagement.git"
   },
-  "homepage": "https://github.com/Manish-162403/project-productsManagementGroup10#readme",
+  "homepage": "https://github.com/karuna19072001/Project5-productsManagement.git",
   "dependencies": {
     "aws-sdk": "^2.1111.0",
     "bcrypt": "^5.0.1",
